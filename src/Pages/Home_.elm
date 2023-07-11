@@ -1,6 +1,7 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
 import Components.ColorSelector
+import Components.PrintIcon
 import Components.QtySelector
 import Components.TagBottomCopy
 import Components.TagTopCopy
@@ -82,7 +83,20 @@ view model =
                 { qty = model.qty
                 , onQtyChanged = ChangedTagQty
                 }
-            , Html.text "ViewSwitcher"
+            , Html.button
+                [ css
+                    [ Tw.px_4
+                    , Tw.py_2
+                    , Tw.rounded
+                    , Tw.border_2
+                    , Tw.border_color Theme.slate_800
+                    , Tw.bg_color Theme.slate_600
+                    , Tw.text_color Theme.slate_200
+                    , Tw.flex
+                    , Tw.gap_2
+                    ]
+                ]
+                [ Components.PrintIcon.view, Html.text "Print" ]
             ]
         , Html.div
             [ Attr.class "tags"
