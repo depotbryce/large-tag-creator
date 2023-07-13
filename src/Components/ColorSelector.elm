@@ -54,7 +54,7 @@ view props =
                           else
                             Css.batch
                                 [ Tw.bg_color Theme.white
-                                , Tw.border_color Theme.slate_300
+                                , Tw.border_color Theme.slate_400
                                 , hover [ Tw.bg_color Theme.slate_100 ]
                                 , focus [ Tw.bg_color Theme.slate_100 ]
                                 ]

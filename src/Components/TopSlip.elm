@@ -1,6 +1,6 @@
-module Components.TagTopCopy exposing (view)
+module Components.TopSlip exposing (view)
 
-import Css exposing (focus, hover)
+import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import ItemNumber exposing (ItemNumber)
@@ -15,9 +15,9 @@ view { color, itemNumber } =
         [ css
             [ Css.width (Css.inches 4.25)
             , Css.height (Css.inches 4.5)
-            , Tw.bg_color (bgColor color)
             , Tw.relative
             , Tw.pt_4
+            , Tw.m_0
             ]
         ]
         [ --Tag Header
@@ -72,7 +72,10 @@ view { color, itemNumber } =
                 (\_ ->
                     Html.div
                         [ css
-                            [ Tw.h_8, Tw.border_b_2, Tw.border_color Theme.gray_600 ]
+                            [ Tw.h_8
+                            , Tw.border_b_2
+                            , Tw.border_color Theme.gray_600
+                            ]
                         ]
                         []
                 )
@@ -93,19 +96,3 @@ view { color, itemNumber } =
                 ]
             ]
         ]
-
-
-bgColor : TagColor -> Theme.Color
-bgColor color =
-    case color of
-        Green ->
-            Theme.green_200
-
-        Blue ->
-            Theme.blue_200
-
-        Orange ->
-            Theme.orange_200
-
-        Yellow ->
-            Theme.yellow_200

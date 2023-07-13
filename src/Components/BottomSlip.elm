@@ -1,11 +1,10 @@
-module Components.TagBottomCopy exposing (view)
+module Components.BottomSlip exposing (view)
 
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import ItemNumber exposing (ItemNumber)
 import TagColor exposing (TagColor(..))
-import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 
 
@@ -91,19 +90,3 @@ view { color, itemNumber } =
                 ]
             ]
         ]
-
-
-bgColor : TagColor -> Theme.Color
-bgColor color =
-    case color of
-        Green ->
-            Theme.green_200
-
-        Blue ->
-            Theme.blue_200
-
-        Orange ->
-            Theme.orange_200
-
-        Yellow ->
-            Theme.yellow_200

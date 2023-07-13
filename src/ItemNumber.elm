@@ -23,7 +23,7 @@ toInt (ItemNumber int) =
 
 toString : ItemNumber -> String
 toString (ItemNumber int) =
-    String.fromInt int
+    String.fromInt int |> String.padLeft 4 '0'
 
 
 fromString : String -> Maybe ItemNumber

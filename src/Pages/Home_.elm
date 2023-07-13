@@ -1,25 +1,28 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
+import Components.BottomSlip
 import Components.ColorSelector
-import Components.PrintIcon
+import Components.DisplaySwitcher
 import Components.QtySelector
-import Components.TagBottomCopy
-import Components.TagTopCopy
+import Components.TopSlip
+import Css
+import Css.Media exposing (only, print, withMedia)
+import Display exposing (Display(..))
 import Effect exposing (Effect)
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes as Attr exposing (css)
+import Html.Styled.Attributes exposing (css)
 import ItemNumber exposing (ItemNumber)
 import Page exposing (Page)
 import Route exposing (Route)
 import Shared
-import TagColor exposing (TagColor)
+import TagColor exposing (TagColor(..))
 import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 import View exposing (View)
 
 
 page : Shared.Model -> Route () -> Page Model Msg
-page shared route =
+page _ _ =
     Page.new
         { init = init
         , update = update
@@ -31,7 +34,8 @@ page shared route =
 type alias Model =
     { selectedColor : TagColor
     , qty : Int
-    , tags : Maybe (List Tag)
+    , itemNumbers : Maybe (List ItemNumber)
+    , display : Display
     }
 
 
@@ -39,15 +43,18 @@ init : () -> ( Model, Effect Msg )
 init _ =
     ( { selectedColor = TagColor.Green
       , qty = 4
-      , tags = Nothing
+      , itemNumbers = Nothing
+      , display = Preview
       }
-    , Effect.none
+    , Effect.getItemNumberStart 4 GotItemNumberStart
     )
 
 
 type Msg
     = ChangedColor TagColor
     | ChangedTagQty Int
+    | GotItemNumberStart Int
+    | ChangedDisplay Display
 
 
 update : Msg -> Model -> ( Model, Effect Msg )
@@ -57,89 +64,113 @@ update msg model =
             ( { model | selectedColor = color }, Effect.none )
 
         ChangedTagQty qty ->
-            ( { model | qty = qty }, Effect.none )
+            ( { model
+                | qty = qty
+              }
+            , Effect.getItemNumberStart model.qty GotItemNumberStart
+            )
+
+        ChangedDisplay newDisplay ->
+            ( { model | display = newDisplay }
+            , if newDisplay /= Preview && model.itemNumbers == Nothing then
+                Effect.getItemNumberStart model.qty GotItemNumberStart
+
+              else
+                Effect.none
+            )
+
+        GotItemNumberStart start ->
+            ( { model
+                | itemNumbers =
+                    Just
+                        (List.map
+                            ItemNumber.fromInt
+                            (List.range start (start + model.qty - 1))
+                        )
+              }
+            , Effect.none
+            )
 
 
 view : Model -> View Msg
 view model =
+    let
+        itemNumbers =
+            case model.itemNumbers of
+                Just list ->
+                    list
+
+                Nothing ->
+                    []
+    in
     { title = "Home"
     , body =
-        [ Html.div
-            [ Attr.class "controls"
-            , css
-                [ Tw.flex
-                , Tw.justify_between
-                , Tw.items_center
-                , Tw.p_4
-                , Tw.shadow
-                , Tw.bg_color Theme.slate_50
+        [ -- Container
+          Html.div
+            [ css
+                [ Tw.grid
+                , Tw.grid_cols_1
+                , Tw.h_screen
+                , Tw.w_screen
+                , Tw.overflow_hidden
+                , Css.property "grid-template-rows" "auto 1fr"
                 ]
             ]
-            [ Components.ColorSelector.view
-                { selectedColor = model.selectedColor
-                , onColorSelected = ChangedColor
-                }
-            , Components.QtySelector.view
-                { qty = model.qty
-                , onQtyChanged = ChangedTagQty
-                }
-            , Html.button
+            [ -- Controls
+              Html.div
                 [ css
-                    [ Tw.px_4
-                    , Tw.py_2
-                    , Tw.rounded
-                    , Tw.border_2
-                    , Tw.border_color Theme.slate_800
-                    , Tw.bg_color Theme.slate_600
-                    , Tw.text_color Theme.slate_200
-                    , Tw.flex
-                    , Tw.gap_2
+                    [ Tw.flex
+                    , Tw.justify_between
+                    , Tw.items_center
+                    , Tw.p_4
+                    , Tw.shadow
+                    , Tw.bg_color Theme.slate_50
+                    , mediaPrint [ Tw.hidden ]
                     ]
                 ]
-                [ Components.PrintIcon.view, Html.text "Print" ]
-            ]
-        , Html.div
-            [ Attr.class "tags"
-            , css
-                [ Tw.flex
-                , Tw.justify_center
-                , Tw.items_center
+                [ Components.ColorSelector.view
+                    { selectedColor = model.selectedColor
+                    , onColorSelected = ChangedColor
+                    }
+                , Components.QtySelector.view
+                    { qty = model.qty
+                    , onQtyChanged = ChangedTagQty
+                    }
+                , Components.DisplaySwitcher.view
+                    { currentDisplay = model.display
+                    , onDisplayChanged = ChangedDisplay
+                    }
                 ]
-            ]
-            [ Html.div
-                [ css
-                    [ Tw.p_8
-                    , Tw.flex
-                    , Tw.gap_16
-                    ]
-                ]
-                [ Html.div []
-                    [ Html.div
-                        [ css
-                            [ Tw.shadow
-                            , Tw.shadow_color Theme.slate_400
-                            , Tw.border_color Theme.slate_100
-                            ]
-                        ]
-                        [ Components.TagTopCopy.view
-                            { color = model.selectedColor
-                            , itemNumber = ItemNumber.fromInt 1000
-                            }
+            , -- Content Area (Tags)
+              Html.div [ css [ Tw.overflow_y_scroll ] ]
+                [ Html.div
+                    [ css
+                        [ Tw.mx_auto
+                        , Tw.w_fit
+                        , mediaPrint [ Tw.w_full, Tw.mx_0 ]
                         ]
                     ]
-                , Html.div []
-                    [ Html.div
-                        [ css
-                            [ Tw.shadow
-                            , Tw.shadow_color Theme.slate_400
-                            , Tw.border_color Theme.slate_100
-                            ]
-                        ]
-                        [ Components.TagBottomCopy.view
-                            { color = model.selectedColor
-                            , itemNumber = ItemNumber.fromInt 1000
-                            }
-                        ]
+                    [ case model.display of
+                        Preview ->
+                            viewPreview model
+
+                        TopSlips ->
+                            viewTagSheet itemNumbers
+                                (\itemNumber ->
+                                    Components.TopSlip.view
+                                        { color = model.selectedColor
+                                        , itemNumber = itemNumber
+                                        }
+                                )
+
+                        BottomSlips ->
+                            viewTagSheet itemNumbers
+                                (\itemNumber ->
+                                    Components.BottomSlip.view
+                                        { color = model.selectedColor
+                                        , itemNumber = itemNumber
+                                        }
+                                )
                     ]
                 ]
             ]
@@ -147,7 +178,124 @@ view model =
     }
 
 
-type alias Tag =
-    { color : TagColor
-    , itemNumber : Int
-    }
+viewPreview : Model -> Html Msg
+viewPreview model =
+    let
+        bgColor color =
+            case color of
+                Green ->
+                    Theme.green_200
+
+                Blue ->
+                    Theme.blue_200
+
+                Orange ->
+                    Theme.orange_200
+
+                Yellow ->
+                    Theme.yellow_200
+
+        itemNumber =
+            case model.itemNumbers of
+                Just (num :: _) ->
+                    num
+
+                _ ->
+                    ItemNumber.fromInt 0
+    in
+    Html.div
+        [ css
+            [ Tw.p_8
+            , Tw.flex
+            , Tw.gap_16
+            ]
+        ]
+        [ Html.div []
+            [ Html.div
+                [ css
+                    [ Tw.shadow
+                    , Tw.shadow_color Theme.slate_400
+                    , Tw.border_color Theme.slate_100
+                    , Tw.bg_color (bgColor model.selectedColor)
+                    ]
+                ]
+                [ Components.TopSlip.view
+                    { color = model.selectedColor
+                    , itemNumber = itemNumber
+                    }
+                ]
+            ]
+        , Html.div []
+            [ Html.div
+                [ css
+                    [ Tw.shadow
+                    , Tw.shadow_color Theme.slate_400
+                    , Tw.border_color Theme.slate_100
+                    ]
+                ]
+                [ Components.BottomSlip.view
+                    { color = model.selectedColor
+                    , itemNumber = itemNumber
+                    }
+                ]
+            ]
+        ]
+
+
+viewTagSheet : List ItemNumber -> (ItemNumber -> Html Msg) -> Html Msg
+viewTagSheet itemNumbers viewSheet =
+    Html.div
+        []
+    <|
+        List.map
+            (\slipPage ->
+                Html.div
+                    [ css
+                        [ Tw.grid
+                        , Tw.grid_cols_2
+                        , Tw.mt_8
+                        , Css.width (Css.inches 8.5)
+                        , Tw.shadow
+                        , Tw.overflow_hidden
+                        , Css.property "break-inside" "avoid"
+                        , mediaPrint
+                            [ Tw.shadow_none
+                            , Tw.mt_0
+                            ]
+                        ]
+                    ]
+                <|
+                    List.map
+                        (\itemNumber ->
+                            Html.div
+                                [ css
+                                    [ Tw.outline_1
+                                    , Tw.outline_dashed
+                                    , Tw.outline_color Theme.gray_100
+                                    ]
+                                ]
+                                [ viewSheet itemNumber ]
+                        )
+                        slipPage
+            )
+            (paginateItems itemNumbers)
+
+
+mediaPrint : List Css.Style -> Css.Style
+mediaPrint styles =
+    withMedia [ only print [] ] styles
+
+
+paginateItems : List a -> List (List a)
+paginateItems items =
+    let
+        paginate paginated input =
+            if List.length input > 0 then
+                paginate
+                    (paginated ++ [ List.take 4 input ])
+                    (List.drop 4 input)
+
+            else
+                paginated
+    in
+    paginate [] items

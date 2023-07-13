@@ -41,7 +41,7 @@ view { qty, onQtyChanged } =
             , css
                 [ Tw.form_input
                 , Tw.border_2
-                , Tw.border_color Theme.slate_300
+                , Tw.border_color Theme.slate_400
                 , Tw.rounded
                 , Tw.w_32
                 ]
