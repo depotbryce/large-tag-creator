@@ -29,14 +29,14 @@ view { color, itemNumber } =
             [ Html.div
                 [ css
                     [ Tw.flex
-                    , Tw.justify_evenly
+                    , Tw.justify_between
                     , Tw.items_center
+                    , Tw.px_8
                     ]
                 ]
                 [ Html.div
                     [ css
                         [ Tw.text_xs
-                        , Tw.text_right
                         ]
                     ]
                     [ Html.p [] [ Html.text "Item Number:" ]
@@ -46,20 +46,11 @@ view { color, itemNumber } =
                     [ css
                         [ Tw.text_center
                         , Tw.font_bold
-                        , Tw.text_5xl
+                        , Tw.text_4xl
                         ]
                     ]
                     [ Html.text (ItemNumber.toString itemNumber) ]
                 ]
-            , Html.p
-                [ css
-                    [ Tw.text_center
-                    , Tw.capitalize
-                    , Tw.text_xs
-                    , Tw.mt_2
-                    ]
-                ]
-                [ Html.text (TagColor.toStringEn color ++ " / " ++ TagColor.toStringEs color) ]
             ]
 
         -- Tag Description Area
@@ -81,6 +72,22 @@ view { color, itemNumber } =
                 )
                 (List.range 1 3)
 
+        -- Tag Color
+        , Html.p
+            [ css
+                [ Tw.capitalize
+                , Tw.text_xs
+                , Tw.mt_8
+                , Tw.text_center
+                ]
+            ]
+            [ Html.text
+                (TagColor.toStringEn color
+                    ++ " / "
+                    ++ TagColor.toStringEs color
+                )
+            ]
+
         -- Instructions
         , Html.div
             [ css
@@ -89,10 +96,12 @@ view { color, itemNumber } =
                 , Tw.bottom_0
                 , Tw.left_0
                 , Tw.w_full
+                , Tw.text_center
+                , Tw.text_sm
                 ]
             ]
-            [ Html.p [ css [ Tw.text_center ] ]
-                [ Html.text "Remove this tag and present to cashier to purchase. Present with receipt to pick up."
+            [ Html.p []
+                [ Html.text "Present this slip to cashier in furniture store to purchase. Present with receipt at door # 1 to pick up."
                 ]
             ]
         ]
