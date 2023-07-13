@@ -13,9 +13,11 @@ module View exposing
 -}
 
 import Browser
+import Css.Global
 import Html.Styled
 import Route exposing (Route)
 import Shared.Model
+import Tailwind.Utilities
 
 
 type alias View msg =
@@ -35,7 +37,9 @@ toBrowserDocument :
     -> Browser.Document msg
 toBrowserDocument { view } =
     { title = view.title
-    , body = List.map Html.Styled.toUnstyled view.body
+    , body =
+        List.map Html.Styled.toUnstyled
+            (Css.Global.global Tailwind.Utilities.globalStyles :: view.body)
     }
 
 

@@ -23,10 +23,10 @@
         {
           "rel": "styleshet",
           "type": "text/css",
-          "href": "https://cdn.jsdelivr.net/npm/daisyui@3.1.11/dist/full.css"
+          "href": "/print.css"
         }
       ],
-      "script": [{ "src": "https://cdn.tailwindcss.com" }]
+      "script": []
     },
     "router": {
       "useHashRouting": false

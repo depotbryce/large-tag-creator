@@ -115,6 +115,7 @@ view model =
                 , Tw.w_screen
                 , Tw.overflow_hidden
                 , Css.property "grid-template-rows" "auto 1fr"
+                , mediaPrint [ Tw.h_auto, Tw.w_auto ]
                 ]
             ]
             [ --Version
@@ -156,7 +157,12 @@ view model =
                     }
                 ]
             , -- Content Area (Tags)
-              Html.div [ css [ Tw.overflow_y_scroll ] ]
+              Html.div
+                [ css
+                    [ Tw.overflow_y_scroll
+                    , mediaPrint [ Tw.overflow_y_auto ]
+                    ]
+                ]
                 [ Html.div
                     [ css
                         [ Tw.mx_auto
@@ -272,6 +278,7 @@ viewTagSheet itemNumbers viewSheet =
                         , Tw.shadow
                         , Tw.overflow_hidden
                         , Css.property "break-inside" "avoid"
+                        , Css.property "break-after" "page"
                         , mediaPrint
                             [ Tw.shadow_none
                             , Tw.mt_0
