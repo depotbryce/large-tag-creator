@@ -48,7 +48,7 @@ type Effect msg
 
 getItemNumberStart : Int -> (Int -> msg) -> Effect msg
 getItemNumberStart qty toMsg =
-    Random.int 1000 (9999 - qty)
+    Random.int 1 (9999 - qty)
         |> Random.generate toMsg
         |> sendCmd
 

@@ -18,6 +18,7 @@ import Shared
 import TagColor exposing (TagColor(..))
 import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
+import Version
 import View exposing (View)
 
 
@@ -116,7 +117,19 @@ view model =
                 , Css.property "grid-template-rows" "auto 1fr"
                 ]
             ]
-            [ -- Controls
+            [ --Version
+              Html.div
+                [ css
+                    [ Tw.text_xs
+                    , Tw.text_color Theme.slate_600
+                    , Tw.fixed
+                    , Tw.bottom_2
+                    , Tw.left_2
+                    , mediaPrint [ Tw.hidden ]
+                    ]
+                ]
+                [ Html.text Version.current ]
+            , -- Controls
               Html.div
                 [ css
                     [ Tw.flex
@@ -126,6 +139,7 @@ view model =
                     , Tw.shadow
                     , Tw.bg_color Theme.slate_50
                     , mediaPrint [ Tw.hidden ]
+                    , Tw.text_color Theme.slate_800
                     ]
                 ]
                 [ Components.ColorSelector.view
