@@ -3,7 +3,7 @@ module Version exposing (current)
 
 currentVersion : Version
 currentVersion =
-    Version 0 1 1
+    Version 0 1 2
 
 
 type Version
@@ -12,7 +12,12 @@ type Version
 
 toString : Version -> String
 toString (Version major minor patch) =
-    "v" ++ String.join "." [ String.fromInt major, String.fromInt minor, String.fromInt patch ]
+    "v"
+        ++ String.join "."
+            [ String.fromInt major
+            , String.fromInt minor
+            , String.fromInt patch
+            ]
 
 
 current : String

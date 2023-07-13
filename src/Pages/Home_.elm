@@ -104,7 +104,7 @@ view model =
                 Nothing ->
                     []
     in
-    { title = "Home"
+    { title = "Large Item Tag Creator"
     , body =
         [ -- Container
           Html.div
