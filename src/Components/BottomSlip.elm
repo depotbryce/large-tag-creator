@@ -5,6 +5,7 @@ import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import ItemNumber exposing (ItemNumber)
 import TagColor exposing (TagColor(..))
+import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 
 
@@ -20,17 +21,52 @@ view { color, itemNumber } =
         ]
         [ Html.div
             [ css [ Tw.p_8 ] ]
-            [ Html.h1
+            [ Html.div
                 [ css
-                    [ Tw.text_center
+                    [ Tw.mb_8
+                    , Tw.text_center
                     , Tw.font_bold
-                    , Tw.text_5xl
                     , Tw.uppercase
-                    , Tw.mb_8
                     ]
                 ]
-                [ Html.text "Sale Pending" ]
-            , Html.p [] [ Html.text "A customer is planning to purchase this item. If it is not sold by the end of the day, it will be available again tomorrow." ]
+                [ Html.h1
+                    [ css [ Tw.text_5xl ] ]
+                    [ Html.text "Sale Pending" ]
+                , Html.h1
+                    [ css
+                        [ Tw.text_2xl
+                        , Tw.text_color Theme.gray_700
+                        , Tw.mt_2
+                        ]
+                    ]
+                    [ Html.text "Venta Pendiente" ]
+                ]
+            , -- Information
+              Html.div
+                [ css
+                    [ Tw.text_xs
+                    , Tw.text_center
+                    ]
+                ]
+                [ Html.p
+                    []
+                    [ Html.text
+                        """A customer is purchasing this item. 
+                    If the sale is not completed by the end of the day,
+                    this item will be available for sale tomorrow."""
+                    ]
+                , Html.p
+                    [ css
+                        [ Tw.mt_4
+                        , Tw.text_color Theme.gray_700
+                        ]
+                    ]
+                    [ Html.text
+                        """Un cliente está comprando este artículo. 
+                    Si la venta no se completa al final del día,
+                    este artículo estará disponible para la venta mañana."""
+                    ]
+                ]
             ]
 
         --Item Info
@@ -83,10 +119,15 @@ view { color, itemNumber } =
                 , Tw.bottom_0
                 , Tw.left_0
                 , Tw.w_full
+                , Tw.text_center
+                , Tw.text_xs
                 ]
             ]
-            [ Html.p [ css [ Tw.text_center ] ]
-                [ Html.text "Please leave this slip attached to the item."
-                ]
+            [ Html.p
+                []
+                [ Html.text "Please leave this slip attached to the item." ]
+            , Html.p
+                [ css [ Tw.text_color Theme.gray_700, Tw.mt_2 ] ]
+                [ Html.text "Por favor, deje este comprobante adjunto al artículo." ]
             ]
         ]

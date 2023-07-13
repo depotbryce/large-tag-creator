@@ -23,7 +23,8 @@ view { color, itemNumber } =
         [ --Tag Header
           Html.div
             [ css
-                [ Tw.py_8
+                [ Tw.pt_8
+                , Tw.pb_6
                 ]
             ]
             [ Html.div
@@ -56,7 +57,7 @@ view { color, itemNumber } =
         -- Tag Description Area
         , Html.div
             [ css
-                [ Tw.m_8 ]
+                [ Tw.m_8, Tw.mt_0 ]
             ]
           <|
             List.map
@@ -97,11 +98,18 @@ view { color, itemNumber } =
                 , Tw.left_0
                 , Tw.w_full
                 , Tw.text_center
-                , Tw.text_sm
+                , Tw.text_xs
                 ]
             ]
             [ Html.p []
-                [ Html.text "Present this slip to cashier in furniture store to purchase. Present with receipt at door # 1 to pick up."
+                [ Html.text
+                    """Present this slip to cashier in furniture store to purchase.
+                    Present with receipt at door # 1 to pick up."""
+                ]
+            , Html.p [ css [ Tw.mt_4, Tw.text_color Theme.gray_700 ] ]
+                [ Html.text
+                    """Presente este comprobante al cajero en la tienda de muebles para comprar.
+                    Presente con recibo en la puerta número 1 para recoger."""
                 ]
             ]
         ]
