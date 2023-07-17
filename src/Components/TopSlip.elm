@@ -16,15 +16,14 @@ view { color, itemNumber } =
             [ Css.width (Css.inches 4.25)
             , Css.height (Css.inches 4.5)
             , Tw.relative
-            , Tw.pt_4
             , Tw.m_0
             ]
         ]
         [ --Tag Header
           Html.div
             [ css
-                [ Tw.pt_8
-                , Tw.pb_6
+                [ Tw.pt_16
+                , Tw.pb_8
                 ]
             ]
             [ Html.div
@@ -35,29 +34,54 @@ view { color, itemNumber } =
                     , Tw.px_8
                     ]
                 ]
-                [ Html.div
+                [ -- Sticker placeholder
+                  Html.div
                     [ css
-                        [ Tw.text_xs
+                        [ Tw.w_20
+                        , Tw.h_16
+                        , Tw.outline_1
+                        , Tw.outline_dotted
+                        , Tw.outline_color Theme.gray_300
+                        , Tw.flex
+                        , Tw.items_center
+                        , Tw.justify_center
+                        , Tw.text_color Theme.gray_200
                         ]
                     ]
-                    [ Html.p [] [ Html.text "Item Number:" ]
-                    , Html.p [] [ Html.text "Número de Artículo:" ]
-                    ]
-                , Html.h1
+                    [ Html.text "$" ]
+                , Html.div
                     [ css
-                        [ Tw.text_center
+                        [ Tw.text_right
                         , Tw.font_bold
                         , Tw.text_4xl
                         ]
                     ]
-                    [ Html.text (ItemNumber.toString itemNumber) ]
+                    [ Html.text (ItemNumber.toString itemNumber)
+
+                    -- Tag Color
+                    , Html.p
+                        [ css
+                            [ Tw.capitalize
+                            , Tw.font_normal
+                            , Tw.text_xs
+                            ]
+                        ]
+                        [ Html.text
+                            (TagColor.toStringEn color
+                                ++ " / "
+                                ++ TagColor.toStringEs color
+                            )
+                        ]
+                    ]
                 ]
             ]
 
         -- Tag Description Area
         , Html.div
             [ css
-                [ Tw.m_8, Tw.mt_0 ]
+                [ Tw.m_8
+                , Tw.mt_0
+                ]
             ]
           <|
             List.map
@@ -66,28 +90,12 @@ view { color, itemNumber } =
                         [ css
                             [ Tw.h_8
                             , Tw.border_b_2
-                            , Tw.border_color Theme.gray_600
+                            , Tw.border_color Theme.gray_400
                             ]
                         ]
                         []
                 )
-                (List.range 1 3)
-
-        -- Tag Color
-        , Html.p
-            [ css
-                [ Tw.capitalize
-                , Tw.text_xs
-                , Tw.mt_8
-                , Tw.text_center
-                ]
-            ]
-            [ Html.text
-                (TagColor.toStringEn color
-                    ++ " / "
-                    ++ TagColor.toStringEs color
-                )
-            ]
+                (List.range 1 2)
 
         -- Instructions
         , Html.div
@@ -97,16 +105,15 @@ view { color, itemNumber } =
                 , Tw.bottom_0
                 , Tw.left_0
                 , Tw.w_full
-                , Tw.text_center
-                , Tw.text_xs
+                , Tw.text_justify
                 ]
             ]
             [ Html.p []
                 [ Html.text
-                    """Present this slip to cashier in furniture store to purchase.
-                    Present with receipt at door # 1 to pick up."""
+                    """To purchase, present this slip to cashier in furniture store.
+                    To pick up, present with receipt at door # 1."""
                 ]
-            , Html.p [ css [ Tw.mt_4, Tw.text_color Theme.gray_700 ] ]
+            , Html.p [ css [ Tw.mt_4, Tw.text_color Theme.gray_700, Tw.text_sm ] ]
                 [ Html.text
                     """Presente este comprobante al cajero en la tienda de muebles para comprar.
                     Presente con recibo en la puerta número 1 para recoger."""
