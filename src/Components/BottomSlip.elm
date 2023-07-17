@@ -44,8 +44,7 @@ view { color, itemNumber } =
             , -- Information
               Html.div
                 [ css
-                    [ Tw.text_xs
-                    , Tw.text_center
+                    [ Tw.text_justify
                     ]
                 ]
                 [ Html.p
@@ -59,6 +58,7 @@ view { color, itemNumber } =
                     [ css
                         [ Tw.mt_4
                         , Tw.text_color Theme.gray_700
+                        , Tw.text_sm
                         ]
                     ]
                     [ Html.text
@@ -71,63 +71,46 @@ view { color, itemNumber } =
 
         --Item Info
         , Html.div
-            [ css
-                [ Tw.py_8
-                ]
-            ]
+            []
             [ Html.div
                 [ css
-                    [ Tw.flex
-                    , Tw.justify_evenly
-                    , Tw.items_center
+                    [ Tw.text_center
                     ]
                 ]
-                [ Html.div
+                [ Html.h1
                     [ css
-                        [ Tw.text_xs
-                        , Tw.text_right
-                        ]
-                    ]
-                    [ Html.p [] [ Html.text "Item Number:" ]
-                    , Html.p [] [ Html.text "Número de Artículo:" ]
-                    ]
-                , Html.h1
-                    [ css
-                        [ Tw.text_center
-                        , Tw.font_bold
+                        [ Tw.font_bold
                         , Tw.text_5xl
                         ]
                     ]
                     [ Html.text (ItemNumber.toString itemNumber) ]
-                ]
-            , Html.p
-                [ css
-                    [ Tw.text_center
-                    , Tw.capitalize
-                    , Tw.text_xs
-                    , Tw.mt_2
+                , Html.p
+                    [ css
+                        [ Tw.capitalize
+                        , Tw.text_xs
+                        ]
                     ]
+                    [ Html.text (TagColor.toStringEn color ++ " / " ++ TagColor.toStringEs color) ]
                 ]
-                [ Html.text (TagColor.toStringEn color ++ " / " ++ TagColor.toStringEs color) ]
             ]
 
         -- Instructions
         , Html.div
             [ css
                 [ Tw.p_8
+                , Tw.pb_4
                 , Tw.absolute
                 , Tw.bottom_0
                 , Tw.left_0
                 , Tw.w_full
                 , Tw.text_center
-                , Tw.text_xs
                 ]
             ]
             [ Html.p
                 []
-                [ Html.text "Please leave this slip attached to the item." ]
+                [ Html.text "Please leave this slip attached to the item" ]
             , Html.p
-                [ css [ Tw.text_color Theme.gray_700, Tw.mt_2 ] ]
-                [ Html.text "Por favor, deje este comprobante adjunto al artículo." ]
+                [ css [ Tw.text_color Theme.gray_700, Tw.mt_2, Tw.text_sm ] ]
+                [ Html.text "Por favor, deje este comprobante adjunto al artículo" ]
             ]
         ]
