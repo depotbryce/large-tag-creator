@@ -97,8 +97,8 @@ view { color, itemNumber } =
         -- Instructions
         , Html.div
             [ css
-                [ Tw.p_8
-                , Tw.pb_4
+                [ Tw.p_4
+                , Tw.pt_8
                 , Tw.absolute
                 , Tw.bottom_0
                 , Tw.left_0
@@ -107,10 +107,14 @@ view { color, itemNumber } =
                 ]
             ]
             [ Html.p
-                []
-                [ Html.text "Please leave this slip attached to the item" ]
+                [ css
+                    [ Tw.font_bold
+                    , Tw.text_lg
+                    ]
+                ]
+                [ Html.text "Please leave this slip attached to the item!" ]
             , Html.p
                 [ css [ Tw.text_color Theme.gray_700, Tw.mt_2, Tw.text_sm ] ]
-                [ Html.text "Por favor, deje este comprobante adjunto al artículo" ]
+                [ Html.text "¡Por favor, deje este comprobante adjunto al artículo!" ]
             ]
         ]

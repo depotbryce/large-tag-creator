@@ -115,8 +115,8 @@ view { color, itemNumber } =
                 ]
             , Html.p [ css [ Tw.mt_4, Tw.text_color Theme.gray_700, Tw.text_sm ] ]
                 [ Html.text
-                    """Presente este comprobante al cajero en la tienda de muebles para comprar.
-                    Presente con recibo en la puerta número 1 para recoger."""
+                    """Para comprar, presente este comprobante al cajero en la tienda de muebles. 
+                    Para recoger, presente con recibo en la puerta número 1."""
                 ]
             ]
         ]
