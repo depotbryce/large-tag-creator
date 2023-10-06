@@ -1,4 +1,4 @@
-module Components.DisplaySwitcher exposing (..)
+module Components.DisplaySwitcher exposing (view)
 
 import Components.PrintIcon
 import Css
