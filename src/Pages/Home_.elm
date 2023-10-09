@@ -3,6 +3,7 @@ module Pages.Home_ exposing (Model, Msg, page)
 import Components.BottomSlip
 import Components.ColorSelector
 import Components.DisplaySwitcher
+import Components.Policies
 import Components.QtySelector
 import Components.TopSlip
 import Css
@@ -175,7 +176,11 @@ view model =
                             viewPreview model
 
                         TopSlips ->
-                            viewTagSheet itemNumbers
+                            viewTagSheet
+                                { itemNumbers = itemNumbers
+                                , backContent =
+                                    Content Components.Policies.view
+                                }
                                 (\itemNumber ->
                                     Components.TopSlip.view
                                         { color = model.selectedColor
@@ -184,7 +189,10 @@ view model =
                                 )
 
                         BottomSlips ->
-                            viewTagSheet itemNumbers
+                            viewTagSheet
+                                { itemNumbers = itemNumbers
+                                , backContent = Blank
+                                }
                                 (\itemNumber ->
                                     Components.BottomSlip.view
                                         { color = model.selectedColor
@@ -262,42 +270,60 @@ viewPreview model =
         ]
 
 
-viewTagSheet : List ItemNumber -> (ItemNumber -> Html Msg) -> Html Msg
-viewTagSheet itemNumbers viewSheet =
+viewTagSheet :
+    { itemNumbers : List ItemNumber
+    , backContent : BackContent
+    }
+    -> (ItemNumber -> Html Msg)
+    -> Html Msg
+viewTagSheet { itemNumbers, backContent } viewSheet =
+    let
+        sheetStyles =
+            [ Tw.grid
+            , Tw.grid_cols_2
+            , Tw.mt_8
+            , Css.width (Css.inches 8.5)
+            , Tw.shadow
+            , Tw.overflow_hidden
+            , Css.property "break-inside" "avoid"
+            , Css.property "break-after" "page"
+            , mediaPrint
+                [ Tw.shadow_none
+                , Tw.mt_0
+                ]
+            ]
+
+        slipStyles =
+            [ Tw.outline_1
+            , Tw.outline_dashed
+            , Tw.outline_color Theme.gray_100
+            ]
+    in
     Html.div
         []
     <|
         List.map
             (\slipPage ->
-                Html.div
-                    [ css
-                        [ Tw.grid
-                        , Tw.grid_cols_2
-                        , Tw.mt_8
-                        , Css.width (Css.inches 8.5)
-                        , Tw.shadow
-                        , Tw.overflow_hidden
-                        , Css.property "break-inside" "avoid"
-                        , Css.property "break-after" "page"
-                        , mediaPrint
-                            [ Tw.shadow_none
-                            , Tw.mt_0
-                            ]
-                        ]
+                Html.div []
+                    [ Html.div
+                        [ css sheetStyles ]
+                      <|
+                        List.map
+                            (\itemNumber ->
+                                Html.div
+                                    [ css slipStyles ]
+                                    [ viewSheet itemNumber ]
+                            )
+                            slipPage
+                    , case backContent of
+                        Blank ->
+                            Html.text ""
+
+                        Content content ->
+                            Html.div [ css sheetStyles ] <|
+                                List.repeat 4
+                                    (Html.div [ css slipStyles ] [ content ])
                     ]
-                <|
-                    List.map
-                        (\itemNumber ->
-                            Html.div
-                                [ css
-                                    [ Tw.outline_1
-                                    , Tw.outline_dashed
-                                    , Tw.outline_color Theme.gray_100
-                                    ]
-                                ]
-                                [ viewSheet itemNumber ]
-                        )
-                        slipPage
             )
             (paginateItems itemNumbers)
 
@@ -320,3 +346,10 @@ paginateItems items =
                 paginated
     in
     paginate [] items
+
+
+{-| Represents the contents to display on the bag of a slip
+-}
+type BackContent
+    = Blank
+    | Content (Html Msg)
