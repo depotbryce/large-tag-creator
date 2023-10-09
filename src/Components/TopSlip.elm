@@ -2,7 +2,7 @@ module Components.TopSlip exposing (view)
 
 import Css
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (css, lang)
 import ItemNumber exposing (ItemNumber)
 import TagColor exposing (TagColor(..))
 import Tailwind.Theme as Theme
@@ -66,11 +66,11 @@ view { color, itemNumber } =
                             , Tw.text_xs
                             ]
                         ]
-                        [ Html.text
-                            (TagColor.toStringEn color
-                                ++ " / "
-                                ++ TagColor.toStringEs color
-                            )
+                        [ Html.span [ lang "en" ]
+                            [ Html.text (TagColor.toStringEn color) ]
+                        , Html.text " / "
+                        , Html.span [ lang "es" ]
+                            [ Html.text (TagColor.toStringEs color) ]
                         ]
                     ]
                 ]
@@ -108,12 +108,12 @@ view { color, itemNumber } =
                 , Tw.text_justify
                 ]
             ]
-            [ Html.p []
+            [ Html.p [ lang "en" ]
                 [ Html.text
                     """To purchase, present this slip to cashier in furniture store.
                     To pick up, present with receipt at door # 1."""
                 ]
-            , Html.p [ css [ Tw.mt_4, Tw.text_color Theme.gray_700, Tw.text_sm ] ]
+            , Html.p [ lang "es", css [ Tw.mt_4, Tw.text_color Theme.gray_700, Tw.text_sm ] ]
                 [ Html.text
                     """Para comprar, presente este comprobante al cajero en la tienda de muebles. 
                     Para recoger, presente con recibo en la puerta número 1."""

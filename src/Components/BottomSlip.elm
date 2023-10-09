@@ -2,7 +2,7 @@ module Components.BottomSlip exposing (view)
 
 import Css
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (css, lang)
 import ItemNumber exposing (ItemNumber)
 import TagColor exposing (TagColor(..))
 import Tailwind.Theme as Theme
@@ -30,10 +30,11 @@ view { color, itemNumber } =
                     ]
                 ]
                 [ Html.h1
-                    [ css [ Tw.text_5xl ] ]
+                    [ lang "en", css [ Tw.text_5xl ] ]
                     [ Html.text "Sale Pending" ]
                 , Html.h1
-                    [ css
+                    [ lang "es"
+                    , css
                         [ Tw.text_2xl
                         , Tw.text_color Theme.gray_700
                         , Tw.mt_2
@@ -48,14 +49,15 @@ view { color, itemNumber } =
                     ]
                 ]
                 [ Html.p
-                    []
+                    [ lang "en" ]
                     [ Html.text
                         """A customer is purchasing this item. 
                     If the sale is not completed by the end of the day,
                     this item will be available for sale tomorrow."""
                     ]
                 , Html.p
-                    [ css
+                    [ lang "es"
+                    , css
                         [ Tw.mt_4
                         , Tw.text_color Theme.gray_700
                         , Tw.text_sm
@@ -90,7 +92,12 @@ view { color, itemNumber } =
                         , Tw.text_xs
                         ]
                     ]
-                    [ Html.text (TagColor.toStringEn color ++ " / " ++ TagColor.toStringEs color) ]
+                    [ Html.span [ lang "en" ]
+                        [ Html.text (TagColor.toStringEn color) ]
+                    , Html.text " / "
+                    , Html.span [ lang "es" ]
+                        [ Html.text (TagColor.toStringEs color) ]
+                    ]
                 ]
             ]
 
@@ -107,14 +114,17 @@ view { color, itemNumber } =
                 ]
             ]
             [ Html.p
-                [ css
+                [ lang "en"
+                , css
                     [ Tw.font_bold
                     , Tw.text_lg
                     ]
                 ]
                 [ Html.text "Please leave this slip attached to the item!" ]
             , Html.p
-                [ css [ Tw.text_color Theme.gray_700, Tw.mt_2, Tw.text_sm ] ]
+                [ lang "es"
+                , css [ Tw.text_color Theme.gray_700, Tw.mt_2, Tw.text_sm ]
+                ]
                 [ Html.text "¡Por favor, deje este comprobante adjunto al artículo!" ]
             ]
         ]
