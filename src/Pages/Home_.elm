@@ -4,6 +4,7 @@ import Components.BottomSlip
 import Components.ColorSelector
 import Components.DisplaySwitcher
 import Components.Policies
+import Components.PrintInstructions
 import Components.QtySelector
 import Components.TopSlip
 import Css
@@ -161,6 +162,7 @@ view model =
               Html.div
                 [ css
                     [ Tw.overflow_y_scroll
+                    , Tw.bg_color Theme.slate_200
                     , mediaPrint [ Tw.overflow_y_auto ]
                     ]
                 ]
@@ -176,29 +178,61 @@ view model =
                             viewPreview model
 
                         TopSlips ->
-                            viewTagSheet
-                                { itemNumbers = itemNumbers
-                                , backContent =
-                                    Content Components.Policies.view
-                                }
-                                (\itemNumber ->
-                                    Components.TopSlip.view
-                                        { color = model.selectedColor
-                                        , itemNumber = itemNumber
+                            Html.div [ css [ Css.width (Css.inches 10) ] ]
+                                [ Html.div
+                                    [ css
+                                        [ Tw.fixed
+                                        , Tw.top_32
+                                        , Tw.right_4
+                                        , mediaPrint [ Tw.hidden ]
+                                        ]
+                                    ]
+                                    [ Components.PrintInstructions.view
+                                        { margins = "None"
+                                        , doubleSided = "Flip on Long Edge"
+                                        , scale = "100%"
                                         }
-                                )
+                                    ]
+                                , viewTagSheet
+                                    { itemNumbers = itemNumbers
+                                    , backContent =
+                                        Content Components.Policies.view
+                                    }
+                                    (\itemNumber ->
+                                        Components.TopSlip.view
+                                            { color = model.selectedColor
+                                            , itemNumber = itemNumber
+                                            }
+                                    )
+                                ]
 
                         BottomSlips ->
-                            viewTagSheet
-                                { itemNumbers = itemNumbers
-                                , backContent = Blank
-                                }
-                                (\itemNumber ->
-                                    Components.BottomSlip.view
-                                        { color = model.selectedColor
-                                        , itemNumber = itemNumber
+                            Html.div [ css [ Css.width (Css.inches 10) ] ]
+                                [ Html.div
+                                    [ css
+                                        [ Tw.fixed
+                                        , Tw.top_32
+                                        , Tw.right_4
+                                        , mediaPrint [ Tw.hidden ]
+                                        ]
+                                    ]
+                                    [ Components.PrintInstructions.view
+                                        { margins = "None"
+                                        , doubleSided = "None"
+                                        , scale = "100%"
                                         }
-                                )
+                                    ]
+                                , viewTagSheet
+                                    { itemNumbers = itemNumbers
+                                    , backContent = Blank
+                                    }
+                                    (\itemNumber ->
+                                        Components.BottomSlip.view
+                                            { color = model.selectedColor
+                                            , itemNumber = itemNumber
+                                            }
+                                    )
+                                ]
                     ]
                 ]
             ]
@@ -259,6 +293,7 @@ viewPreview model =
                     [ Tw.shadow
                     , Tw.shadow_color Theme.slate_400
                     , Tw.border_color Theme.slate_100
+                    , Tw.bg_color Theme.white
                     ]
                 ]
                 [ Components.BottomSlip.view
@@ -285,6 +320,7 @@ viewTagSheet { itemNumbers, backContent } viewSheet =
             , Css.width (Css.inches 8.5)
             , Tw.shadow
             , Tw.overflow_hidden
+            , Tw.bg_color Theme.white
             , Css.property "break-inside" "avoid"
             , Css.property "break-after" "page"
             , mediaPrint

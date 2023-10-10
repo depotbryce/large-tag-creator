@@ -67,14 +67,16 @@ view { currentDisplay, onDisplayChanged } =
                         TopSlips ->
                             Html.div
                                 [ css styles ]
-                                [ Components.PrintIcon.view
+                                [ Html.div [ css [ Tw.h_6, Tw.w_6 ] ]
+                                    [ Components.PrintIcon.view ]
                                 , Html.text "Top Slips"
                                 ]
 
                         BottomSlips ->
                             Html.div
                                 [ css styles ]
-                                [ Components.PrintIcon.view
+                                [ Html.div [ css [ Tw.h_6, Tw.w_6 ] ]
+                                    [ Components.PrintIcon.view ]
                                 , Html.text "Bottom Slips"
                                 ]
                     ]

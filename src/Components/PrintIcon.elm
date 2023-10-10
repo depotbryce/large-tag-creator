@@ -1,9 +1,10 @@
 module Components.PrintIcon exposing (view)
 
 import Html.Styled exposing (Html)
-import Html.Styled.Attributes exposing (attribute)
+import Html.Styled.Attributes exposing (attribute, css)
 import Svg.Styled exposing (node, path, svg)
 import Svg.Styled.Attributes exposing (class, d, fill, viewBox)
+import Tailwind.Utilities as Tw
 
 
 view : Html msg
@@ -19,6 +20,10 @@ view =
         , viewBox "0 0 24 24"
         , attribute "width" "24"
         , attribute "xmlns" "http://www.w3.org/2000/svg"
+        , css
+            [ Tw.h_full
+            , Tw.w_full
+            ]
         ]
         [ node "polyline"
             [ attribute "points" "6 9 6 2 18 2 18 9" ]
