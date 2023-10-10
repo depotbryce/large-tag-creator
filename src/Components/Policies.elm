@@ -3,7 +3,7 @@ module Components.Policies exposing (view)
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css, lang)
-import Tailwind.Theme as Tw
+import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 
 
@@ -34,7 +34,7 @@ view =
                 , css
                     [ Tw.font_normal
                     , Tw.italic
-                    , Tw.text_color Tw.gray_700
+                    , Tw.text_color Theme.gray_700
                     ]
                 ]
                 [ Html.text "Horario de Entrega" ]
@@ -44,7 +44,7 @@ view =
                 [ css [ Tw.flex, Tw.gap_2 ] ]
                 [ Html.span [ lang "en" ] [ Html.text "Mon - Fri" ]
                 , Html.text "/"
-                , Html.span [ lang "es", css [ Tw.text_color Tw.gray_700 ] ]
+                , Html.span [ lang "es", css [ Tw.text_color Theme.gray_700 ] ]
                     [ Html.text "De Lunes a Viernes" ]
                 , Html.span [ css [ Tw.flex_grow, Tw.text_right ] ]
                     [ Html.text "9am - 5pm" ]
@@ -55,7 +55,7 @@ view =
                 , Html.text "/"
                 , Html.span
                     [ lang "es"
-                    , css [ Tw.text_color Tw.gray_700 ]
+                    , css [ Tw.text_color Theme.gray_700 ]
                     ]
                     [ Html.text "Sabado" ]
                 , Html.span [ css [ Tw.flex_grow, Tw.text_right ] ]
@@ -69,7 +69,11 @@ view =
             , Html.span
                 [ lang "es"
                 , css
-                    [ Tw.font_normal, Tw.italic, Tw.block, Tw.text_color Tw.gray_700 ]
+                    [ Tw.font_normal
+                    , Tw.italic
+                    , Tw.block
+                    , Tw.text_color Theme.gray_700
+                    ]
                 ]
                 [ Html.text "Política de Entrega y Redonación" ]
             ]
@@ -82,7 +86,7 @@ view =
             , css
                 [ Tw.text_xs
                 , Tw.mt_4
-                , Tw.text_color Tw.gray_700
+                , Tw.text_color Theme.gray_700
                 ]
             ]
             [ Html.text "Todos los artículos deben recogerse dentro de los 7 días posteriores a la compra. Los artículos que no se recojan en un plazo de 7 días pueden ser redonados y puestos a la venta de nuevo. Esta política es necesaria debido a las limitaciones de espacio. Pedimos una disculpa y agradecemos su atención."
@@ -90,9 +94,10 @@ view =
         ]
 
 
+headingStyles : List Css.Style
 headingStyles =
     [ Tw.font_bold
     , Tw.mb_2
     , Tw.border_b_2
-    , Tw.border_color Tw.gray_400
+    , Tw.border_color Theme.gray_400
     ]

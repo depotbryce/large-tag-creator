@@ -1,8 +1,10 @@
 module Components.PrintInstructions exposing (view)
 
 import Components.PrintIcon
+import Css
+import Css.Media exposing (only, print, withMedia)
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (css, lang)
+import Html.Styled.Attributes exposing (css)
 import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 
@@ -19,6 +21,9 @@ view { margins, doubleSided, scale } =
             [ Tw.rounded_xl
             , Tw.bg_color Theme.cyan_700
             , Tw.text_color Theme.slate_100
+            , Tw.fixed
+            , Tw.top_32
+            , Tw.right_4
             , Tw.p_4
             , Tw.w_80
             , Tw.shadow
@@ -71,3 +76,8 @@ viewRow { label, value } =
             ]
             [ Html.text value ]
         ]
+
+
+mediaPrint : List Css.Style -> Css.Style
+mediaPrint styles =
+    withMedia [ only print [] ] styles

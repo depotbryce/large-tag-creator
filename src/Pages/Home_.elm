@@ -179,20 +179,11 @@ view model =
 
                         TopSlips ->
                             Html.div [ css [ Css.width (Css.inches 10) ] ]
-                                [ Html.div
-                                    [ css
-                                        [ Tw.fixed
-                                        , Tw.top_32
-                                        , Tw.right_4
-                                        , mediaPrint [ Tw.hidden ]
-                                        ]
-                                    ]
-                                    [ Components.PrintInstructions.view
-                                        { margins = "None"
-                                        , doubleSided = "Flip on Long Edge"
-                                        , scale = "100%"
-                                        }
-                                    ]
+                                [ Components.PrintInstructions.view
+                                    { margins = "None"
+                                    , doubleSided = "Flip on Long Edge"
+                                    , scale = "100%"
+                                    }
                                 , viewTagSheet
                                     { itemNumbers = itemNumbers
                                     , backContent =
@@ -208,20 +199,11 @@ view model =
 
                         BottomSlips ->
                             Html.div [ css [ Css.width (Css.inches 10) ] ]
-                                [ Html.div
-                                    [ css
-                                        [ Tw.fixed
-                                        , Tw.top_32
-                                        , Tw.right_4
-                                        , mediaPrint [ Tw.hidden ]
-                                        ]
-                                    ]
-                                    [ Components.PrintInstructions.view
-                                        { margins = "None"
-                                        , doubleSided = "None"
-                                        , scale = "100%"
-                                        }
-                                    ]
+                                [ Components.PrintInstructions.view
+                                    { margins = "None"
+                                    , doubleSided = "None"
+                                    , scale = "100%"
+                                    }
                                 , viewTagSheet
                                     { itemNumbers = itemNumbers
                                     , backContent = Blank
