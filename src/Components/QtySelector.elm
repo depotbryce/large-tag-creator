@@ -13,6 +13,9 @@ view { qty, onQtyChanged } =
     let
         id =
             "component-qty-selector-input"
+
+        pageCount =
+            ceiling (toFloat qty / 4)
     in
     Html.div
         [ css
@@ -47,4 +50,17 @@ view { qty, onQtyChanged } =
                 ]
             ]
             []
+        , Html.div
+            [ css [ Tw.text_color Theme.gray_600 ] ]
+            [ Html.text
+                ("("
+                    ++ String.fromInt pageCount
+                    ++ (if pageCount == 1 then
+                            " page)"
+
+                        else
+                            " pages)"
+                       )
+                )
+            ]
         ]
