@@ -3,7 +3,7 @@ module Version exposing (current)
 
 currentVersion : Version
 currentVersion =
-    Version 2 3 1
+    Version 2 3 2
 
 
 type Version

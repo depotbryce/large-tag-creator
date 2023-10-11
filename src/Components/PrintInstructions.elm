@@ -27,6 +27,7 @@ view { margins, doubleSided, scale } =
             , Tw.p_4
             , Tw.w_80
             , Tw.shadow
+            , withMedia [ only print [] ] [ Tw.hidden ]
             ]
         ]
         [ Html.div
@@ -76,8 +77,3 @@ viewRow { label, value } =
             ]
             [ Html.text value ]
         ]
-
-
-mediaPrint : List Css.Style -> Css.Style
-mediaPrint styles =
-    withMedia [ only print [] ] styles
