@@ -46,7 +46,7 @@ view { margins, doubleSided, scale } =
                 , Tw.my_4
                 ]
             ]
-            [ Html.text "Print Settings" ]
+            [ Html.text "Recommended Print Settings" ]
         , Html.table [ css [ Tw.w_full, Tw.h_full ] ] <|
             List.map viewRow
                 [ { label = "Margins", value = margins }
