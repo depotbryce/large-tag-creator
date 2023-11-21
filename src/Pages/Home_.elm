@@ -3,6 +3,7 @@ module Pages.Home_ exposing (Model, Msg, page)
 import Components.BottomSlip
 import Components.ColorSelector
 import Components.DisplaySwitcher
+import Components.NumberInput
 import Components.Policies
 import Components.PrintInstructions
 import Components.QtySelector
@@ -12,7 +13,8 @@ import Css.Media exposing (only, print, withMedia)
 import Display exposing (Display(..))
 import Effect exposing (Effect)
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes as Attr exposing (css, id)
+import Html.Styled.Events as Events
 import ItemNumber exposing (ItemNumber)
 import Page exposing (Page)
 import Route exposing (Route)
@@ -37,7 +39,7 @@ page _ _ =
 type alias Model =
     { selectedColor : TagColor
     , qty : Int
-    , itemNumbers : Maybe (List ItemNumber)
+    , itemNumberStart : StartNumber
     , display : Display
     }
 
@@ -46,11 +48,16 @@ init : () -> ( Model, Effect Msg )
 init _ =
     ( { selectedColor = TagColor.Green
       , qty = 4
-      , itemNumbers = Nothing
+      , itemNumberStart = NotInitialized
       , display = Preview
       }
     , Effect.getItemNumberStart 4 GotItemNumberStart
     )
+
+
+type StartNumber
+    = Start Int
+    | NotInitialized
 
 
 type Msg
@@ -58,6 +65,8 @@ type Msg
     | ChangedTagQty Int
     | GotItemNumberStart Int
     | ChangedDisplay Display
+    | ClickedNewNumbers
+    | GotNewStartNumber String
 
 
 update : Msg -> Model -> ( Model, Effect Msg )
@@ -70,12 +79,17 @@ update msg model =
             ( { model
                 | qty = qty
               }
-            , Effect.getItemNumberStart model.qty GotItemNumberStart
+            , Effect.none
             )
 
         ChangedDisplay newDisplay ->
             ( { model | display = newDisplay }
-            , if newDisplay /= Preview && model.itemNumbers == Nothing then
+            , if
+                newDisplay
+                    /= Preview
+                    && model.itemNumberStart
+                    == NotInitialized
+              then
                 Effect.getItemNumberStart model.qty GotItemNumberStart
 
               else
@@ -83,12 +97,21 @@ update msg model =
             )
 
         GotItemNumberStart start ->
+            ( { model | itemNumberStart = Start start }
+            , Effect.none
+            )
+
+        ClickedNewNumbers ->
+            ( { model | itemNumberStart = NotInitialized }
+            , Effect.getItemNumberStart model.qty GotItemNumberStart
+            )
+
+        GotNewStartNumber str ->
             ( { model
-                | itemNumbers =
-                    Just
-                        (List.map
-                            ItemNumber.fromInt
-                            (List.range start (start + model.qty - 1))
+                | itemNumberStart =
+                    Start
+                        (String.toInt str
+                            |> Maybe.withDefault 0
                         )
               }
             , Effect.none
@@ -99,12 +122,17 @@ view : Model -> View Msg
 view model =
     let
         itemNumbers =
-            case model.itemNumbers of
-                Just list ->
-                    list
-
-                Nothing ->
+            case model.itemNumberStart of
+                NotInitialized ->
                     []
+
+                Start start ->
+                    List.map
+                        ItemNumber.fromInt
+                        (List.range
+                            start
+                            (start + model.qty - 1)
+                        )
     in
     { title = "Large Item Tag Creator"
     , body =
@@ -149,6 +177,18 @@ view model =
                     { selectedColor = model.selectedColor
                     , onColorSelected = ChangedColor
                     }
+                , Components.NumberInput.view
+                    { value =
+                        case model.itemNumberStart of
+                            NotInitialized ->
+                                ""
+
+                            Start start ->
+                                String.fromInt start
+                    , label = "Start Number"
+                    , id = "start-number-input"
+                    , onInput = GotNewStartNumber
+                    }
                 , Components.QtySelector.view
                     { qty = model.qty
                     , onQtyChanged = ChangedTagQty
@@ -175,7 +215,7 @@ view model =
                     ]
                     [ case model.display of
                         Preview ->
-                            viewPreview model
+                            viewPreview itemNumbers model
 
                         TopSlips ->
                             Html.div [ css [ Css.width (Css.inches 10) ] ]
@@ -222,8 +262,8 @@ view model =
     }
 
 
-viewPreview : Model -> Html Msg
-viewPreview model =
+viewPreview : List ItemNumber -> Model -> Html Msg
+viewPreview itemNumbers model =
     let
         bgColor color =
             case color of
@@ -240,8 +280,8 @@ viewPreview model =
                     Theme.yellow_200
 
         itemNumber =
-            case model.itemNumbers of
-                Just (num :: _) ->
+            case itemNumbers of
+                num :: _ ->
                     num
 
                 _ ->

@@ -9,60 +9,91 @@ import Tailwind.Theme as Theme
 import Tailwind.Utilities as Tw
 
 
-view :
+type alias Props msg =
     { selectedColor : TagColor
     , onColorSelected : TagColor -> msg
     }
-    -> Html msg
+
+
+type Pos
+    = First
+    | Middle
+    | Last
+
+
+view : Props msg -> Html msg
 view props =
-    Html.div
+    Html.span
         [ css
-            [ Tw.flex
-            , Tw.gap_2
-            , Tw.w_fit
-            , Tw.overflow_hidden
+            [ Tw.isolate
+            , Tw.inline_flex
+            , Tw.rounded_md
+            , Tw.shadow_sm
             ]
         ]
     <|
-        List.map
-            (\color ->
-                let
-                    bgColor =
-                        tagColorToLightColor color
+        List.map (\( color, pos ) -> viewButton props pos color)
+            [ ( Green, First )
+            , ( Blue, Middle )
+            , ( Orange, Middle )
+            , ( Yellow, Last )
+            ]
 
-                    borderColor =
-                        tagColorToMedColor color
-                in
-                Html.button
-                    [ Events.onClick (props.onColorSelected color)
-                    , css
-                        [ Tw.appearance_none
-                        , Tw.py_2
-                        , Tw.border_2
-                        , Tw.rounded
-                        , Tw.w_24
-                        , Tw.capitalize
-                        , Tw.h_full
-                        , if color == props.selectedColor then
-                            Css.batch
-                                [ Tw.bg_color bgColor
-                                , Tw.border_color borderColor
-                                , hover [ Tw.bg_color bgColor ]
-                                , focus [ Tw.bg_color bgColor ]
-                                ]
 
-                          else
-                            Css.batch
-                                [ Tw.bg_color Theme.white
-                                , Tw.border_color Theme.slate_400
-                                , hover [ Tw.bg_color Theme.slate_100 ]
-                                , focus [ Tw.bg_color Theme.slate_100 ]
-                                ]
-                        ]
+viewButton : Props msg -> Pos -> TagColor -> Html msg
+viewButton props pos color =
+    let
+        colorStyles =
+            if color == props.selectedColor then
+                [ Tw.bg_color (tagColorToLightColor color)
+                , Css.hover [ Tw.bg_color (tagColorToMedColor color) ]
+                ]
+
+            else
+                [ Tw.bg_color Theme.white
+                , Css.hover [ Tw.bg_color Theme.gray_50 ]
+                ]
+
+        posStyles =
+            case pos of
+                First ->
+                    [ Tw.rounded_l_md ]
+
+                Middle ->
+                    [ Tw.neg_ml_px ]
+
+                Last ->
+                    [ Tw.rounded_r_md
+                    , Tw.neg_ml_px
                     ]
-                    [ Html.text (TagColor.toStringEn color) ]
+    in
+    Html.button
+        [ Events.onClick (props.onColorSelected color)
+        , css
+            (List.concat
+                [ [ Tw.relative
+                  , Tw.inline_flex
+                  , Tw.items_center
+                  , Tw.bg_color Theme.white
+                  , Tw.px_3
+                  , Tw.py_2
+                  , Tw.text_sm
+                  , Tw.font_semibold
+                  , Tw.text_color Theme.gray_900
+                  , Tw.capitalize
+                  , Tw.ring_1
+                  , Tw.ring_inset
+                  , Tw.ring_color
+                        (tagColorToMedColor props.selectedColor)
+                  , Css.hover [ Tw.bg_color Theme.gray_50 ]
+                  , Css.focus [ Tw.z_10 ]
+                  ]
+                , posStyles
+                , colorStyles
+                ]
             )
-            TagColor.all
+        ]
+        [ Html.text (TagColor.toStringEn color) ]
 
 
 tagColorToLightColor : TagColor -> Theme.Color
