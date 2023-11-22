@@ -3,7 +3,7 @@ module Pages.Home_ exposing (Model, Msg, page)
 import Components.BottomSlip
 import Components.ColorSelector
 import Components.DisplaySwitcher
-import Components.NumberInput
+import Components.NumberInput as NumberInput
 import Components.Policies
 import Components.PrintInstructions
 import Components.QtySelector
@@ -62,7 +62,7 @@ type StartNumber
 
 type Msg
     = ChangedColor TagColor
-    | ChangedTagQty Int
+    | ChangedTagQty String
     | GotItemNumberStart Int
     | ChangedDisplay Display
     | ClickedNewNumbers
@@ -75,9 +75,9 @@ update msg model =
         ChangedColor color ->
             ( { model | selectedColor = color }, Effect.none )
 
-        ChangedTagQty qty ->
+        ChangedTagQty qtyStr ->
             ( { model
-                | qty = qty
+                | qty = qtyStr |> String.toInt |> Maybe.withDefault 4
               }
             , Effect.none
             )
@@ -133,6 +133,9 @@ view model =
                             start
                             (start + model.qty - 1)
                         )
+
+        pageCount =
+            ceiling (toFloat model.qty / 4)
     in
     { title = "Large Item Tag Creator"
     , body =
@@ -177,7 +180,7 @@ view model =
                     { selectedColor = model.selectedColor
                     , onColorSelected = ChangedColor
                     }
-                , Components.NumberInput.view
+                , NumberInput.default
                     { value =
                         case model.itemNumberStart of
                             NotInitialized ->
@@ -185,14 +188,47 @@ view model =
 
                             Start start ->
                                 String.fromInt start
-                    , label = "Start Number"
+                    , label = "Start Number:"
                     , id = "start-number-input"
                     , onInput = GotNewStartNumber
                     }
-                , Components.QtySelector.view
-                    { qty = model.qty
-                    , onQtyChanged = ChangedTagQty
-                    }
+                    |> NumberInput.view
+                , Html.div
+                    [ css
+                        [ Tw.flex
+                        , Tw.items_center
+                        , Tw.gap_2
+                        ]
+                    ]
+                    [ NumberInput.default
+                        { value = model.qty |> String.fromInt
+                        , onInput = ChangedTagQty
+                        , id = "tag-qty-input"
+                        , label = "Qty:"
+                        }
+                        |> NumberInput.withMin 4
+                        |> NumberInput.withMax 1000
+                        |> NumberInput.withStep 4
+                        |> NumberInput.view
+                    , Html.span
+                        [ css
+                            [ Tw.font_semibold
+                            , Tw.text_sm
+                            , Tw.text_color Theme.gray_700
+                            ]
+                        ]
+                        [ Html.text
+                            ("("
+                                ++ String.fromInt pageCount
+                                ++ (if pageCount == 1 then
+                                        " page)"
+
+                                    else
+                                        " pages)"
+                                   )
+                            )
+                        ]
+                    ]
                 , Components.DisplaySwitcher.view
                     { currentDisplay = model.display
                     , onDisplayChanged = ChangedDisplay
