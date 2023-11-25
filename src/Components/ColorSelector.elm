@@ -86,7 +86,7 @@ viewButton props pos color =
                   , Tw.ring_color
                         (tagColorToMedColor props.selectedColor)
                   , Css.hover [ Tw.bg_color Theme.gray_50 ]
-                  , Css.focus [ Tw.z_10 ]
+                  , Css.focus [ Tw.z_20 ]
                   ]
                 , posStyles
                 , colorStyles

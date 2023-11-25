@@ -168,10 +168,12 @@ view model =
                 [ css
                     [ Tw.flex
                     , Tw.justify_between
+                    , Tw.relative
+                    , Tw.z_10
                     , Tw.items_center
                     , Tw.p_4
-                    , Tw.shadow
-                    , Tw.bg_color Theme.slate_50
+                    , Tw.shadow_sm
+                    , Tw.bg_color Theme.white
                     , mediaPrint [ Tw.hidden ]
                     , Tw.text_color Theme.slate_800
                     ]
