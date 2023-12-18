@@ -6,15 +6,13 @@ import Components.DisplaySwitcher
 import Components.NumberInput as NumberInput
 import Components.Policies
 import Components.PrintInstructions
-import Components.QtySelector
 import Components.TopSlip
 import Css
 import Css.Media exposing (only, print, withMedia)
 import Display exposing (Display(..))
 import Effect exposing (Effect)
 import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes as Attr exposing (css, id)
-import Html.Styled.Events as Events
+import Html.Styled.Attributes exposing (css)
 import ItemNumber exposing (ItemNumber)
 import Page exposing (Page)
 import Route exposing (Route)
