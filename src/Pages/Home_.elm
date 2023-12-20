@@ -3,6 +3,8 @@ module Pages.Home_ exposing (Model, Msg, page)
 import Components.BottomSlip
 import Components.ColorSelector
 import Components.DisplaySwitcher
+import Components.HelpDialog
+import Components.HelpIcon
 import Components.NumberInput as NumberInput
 import Components.Policies
 import Components.PrintInstructions
@@ -13,6 +15,7 @@ import Display exposing (Display(..))
 import Effect exposing (Effect)
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes exposing (css)
+import Html.Styled.Events as Events
 import ItemNumber exposing (ItemNumber)
 import Page exposing (Page)
 import Route exposing (Route)
@@ -39,6 +42,7 @@ type alias Model =
     , pageCount : Int
     , itemNumberStart : StartNumber
     , display : Display
+    , showHelp : Bool
     }
 
 
@@ -48,6 +52,7 @@ init _ =
       , pageCount = 1
       , itemNumberStart = NotInitialized
       , display = Preview
+      , showHelp = False
       }
     , Effect.getItemNumberStart 4 GotItemNumberStart
     )
@@ -64,11 +69,19 @@ type Msg
     | GotItemNumberStart Int
     | ChangedDisplay Display
     | GotNewStartNumber String
+    | ShowHelp
+    | HideHelp
 
 
 update : Msg -> Model -> ( Model, Effect Msg )
 update msg model =
     case msg of
+        ShowHelp ->
+            ( { model | showHelp = True }, Effect.none )
+
+        HideHelp ->
+            ( { model | showHelp = False }, Effect.none )
+
         ChangedColor color ->
             ( { model | selectedColor = color }, Effect.none )
 
@@ -107,7 +120,8 @@ update msg model =
                     && model.itemNumberStart
                     == NotInitialized
               then
-                Effect.getItemNumberStart (model.pageCount * 4) GotItemNumberStart
+                Effect.getItemNumberStart (model.pageCount * 4)
+                    GotItemNumberStart
 
               else
                 Effect.none
@@ -159,8 +173,15 @@ view model =
     in
     { title = "Large Item Tag Creator"
     , body =
-        [ -- Container
-          Html.div
+        [ --Help
+          if model.showHelp then
+            Components.HelpDialog.view { onClose = HideHelp }
+
+          else
+            Html.text ""
+
+        -- Container
+        , Html.div
             [ css
                 [ Tw.grid
                 , Tw.grid_cols_1
@@ -202,19 +223,6 @@ view model =
                     { selectedColor = model.selectedColor
                     , onColorSelected = ChangedColor
                     }
-                , NumberInput.default
-                    { value =
-                        case model.itemNumberStart of
-                            NotInitialized ->
-                                ""
-
-                            Start start ->
-                                String.fromInt start
-                    , label = "Start Number:"
-                    , id = "start-number-input"
-                    , onInput = GotNewStartNumber
-                    }
-                    |> NumberInput.view
                 , Html.div
                     [ css
                         [ Tw.flex
@@ -246,10 +254,35 @@ view model =
                             )
                         ]
                     ]
-                , Components.DisplaySwitcher.view
-                    { currentDisplay = model.display
-                    , onDisplayChanged = ChangedDisplay
+                , NumberInput.default
+                    { value =
+                        case model.itemNumberStart of
+                            NotInitialized ->
+                                ""
+
+                            Start start ->
+                                String.fromInt start
+                    , label = "Start Number:"
+                    , id = "start-number-input"
+                    , onInput = GotNewStartNumber
                     }
+                    |> NumberInput.view
+                , Html.div
+                    [ css
+                        [ Tw.flex
+                        , Tw.items_center
+                        , Tw.justify_between
+                        , Tw.gap_4
+                        ]
+                    ]
+                    [ Components.DisplaySwitcher.view
+                        { currentDisplay = model.display
+                        , onDisplayChanged = ChangedDisplay
+                        }
+                    , Html.button
+                        [ Events.onClick ShowHelp ]
+                        [ Components.HelpIcon.view ]
+                    ]
                 ]
             , -- Content Area (Tags)
               Html.div

@@ -110,6 +110,7 @@ view (NumberInput options) =
             , css
                 [ Tw.rounded_md
                 , Tw.border_0
+                , Tw.w_20
                 , Tw.py_1_dot_5
                 , Tw.px_3
                 , Tw.text_color Theme.gray_900
