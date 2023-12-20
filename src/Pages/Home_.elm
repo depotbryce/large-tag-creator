@@ -72,9 +72,29 @@ update msg model =
         ChangedColor color ->
             ( { model | selectedColor = color }, Effect.none )
 
-        ChangedPageCount qtyStr ->
+        ChangedPageCount countStr ->
+            let
+                count =
+                    countStr |> String.toInt |> Maybe.withDefault 1
+
+                tagQty =
+                    count * 4
+
+                start =
+                    case model.itemNumberStart of
+                        NotInitialized ->
+                            NotInitialized
+
+                        Start num ->
+                            if num + tagQty >= 10000 then
+                                Start <| 10000 - tagQty
+
+                            else
+                                Start num
+            in
             ( { model
-                | pageCount = qtyStr |> String.toInt |> Maybe.withDefault 1
+                | pageCount = count
+                , itemNumberStart = start
               }
             , Effect.none
             )
@@ -99,12 +119,20 @@ update msg model =
             )
 
         GotNewStartNumber str ->
+            let
+                newStart =
+                    String.toInt str |> Maybe.withDefault 0
+
+                pageCount =
+                    if model.pageCount * 4 + newStart >= 10000 then
+                        (10000 - newStart) // 4
+
+                    else
+                        model.pageCount
+            in
             ( { model
-                | itemNumberStart =
-                    Start
-                        (String.toInt str
-                            |> Maybe.withDefault 0
-                        )
+                | itemNumberStart = Start newStart
+                , pageCount = pageCount
               }
             , Effect.none
             )
