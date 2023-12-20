@@ -36,7 +36,7 @@ page _ _ =
 
 type alias Model =
     { selectedColor : TagColor
-    , qty : Int
+    , pageCount : Int
     , itemNumberStart : StartNumber
     , display : Display
     }
@@ -45,7 +45,7 @@ type alias Model =
 init : () -> ( Model, Effect Msg )
 init _ =
     ( { selectedColor = TagColor.Green
-      , qty = 4
+      , pageCount = 1
       , itemNumberStart = NotInitialized
       , display = Preview
       }
@@ -60,10 +60,9 @@ type StartNumber
 
 type Msg
     = ChangedColor TagColor
-    | ChangedTagQty String
+    | ChangedPageCount String
     | GotItemNumberStart Int
     | ChangedDisplay Display
-    | ClickedNewNumbers
     | GotNewStartNumber String
 
 
@@ -73,9 +72,9 @@ update msg model =
         ChangedColor color ->
             ( { model | selectedColor = color }, Effect.none )
 
-        ChangedTagQty qtyStr ->
+        ChangedPageCount qtyStr ->
             ( { model
-                | qty = qtyStr |> String.toInt |> Maybe.withDefault 4
+                | pageCount = qtyStr |> String.toInt |> Maybe.withDefault 1
               }
             , Effect.none
             )
@@ -88,7 +87,7 @@ update msg model =
                     && model.itemNumberStart
                     == NotInitialized
               then
-                Effect.getItemNumberStart model.qty GotItemNumberStart
+                Effect.getItemNumberStart (model.pageCount * 4) GotItemNumberStart
 
               else
                 Effect.none
@@ -97,11 +96,6 @@ update msg model =
         GotItemNumberStart start ->
             ( { model | itemNumberStart = Start start }
             , Effect.none
-            )
-
-        ClickedNewNumbers ->
-            ( { model | itemNumberStart = NotInitialized }
-            , Effect.getItemNumberStart model.qty GotItemNumberStart
             )
 
         GotNewStartNumber str ->
@@ -129,11 +123,11 @@ view model =
                         ItemNumber.fromInt
                         (List.range
                             start
-                            (start + model.qty - 1)
+                            (start + (model.pageCount * 4) - 1)
                         )
 
         pageCount =
-            ceiling (toFloat model.qty / 4)
+            model.pageCount
     in
     { title = "Large Item Tag Creator"
     , body =
@@ -201,14 +195,14 @@ view model =
                         ]
                     ]
                     [ NumberInput.default
-                        { value = model.qty |> String.fromInt
-                        , onInput = ChangedTagQty
-                        , id = "tag-qty-input"
-                        , label = "Qty:"
+                        { value = model.pageCount |> String.fromInt
+                        , onInput = ChangedPageCount
+                        , id = "page-count-input"
+                        , label = "Pages:"
                         }
-                        |> NumberInput.withMin 4
-                        |> NumberInput.withMax 1000
-                        |> NumberInput.withStep 4
+                        |> NumberInput.withMin 1
+                        |> NumberInput.withMax 100
+                        |> NumberInput.withStep 1
                         |> NumberInput.view
                     , Html.span
                         [ css
@@ -219,13 +213,8 @@ view model =
                         ]
                         [ Html.text
                             ("("
-                                ++ String.fromInt pageCount
-                                ++ (if pageCount == 1 then
-                                        " page)"
-
-                                    else
-                                        " pages)"
-                                   )
+                                ++ String.fromInt (pageCount * 4)
+                                ++ " tags)"
                             )
                         ]
                     ]
